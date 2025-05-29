@@ -1,9 +1,11 @@
 @import "tailwindcss";
-@plugin "daisyui";
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
+@plugin "@iconify/tailwind4";
+
+@plugin "daisyui";
 @plugin "daisyui/theme" {
   name: "light";
-  default: true;
   --color-base-100: oklch(1 0 none);
   --color-base-200: oklch(0.94 0 0);
   --color-base-300: oklch(0.87 0 0);
