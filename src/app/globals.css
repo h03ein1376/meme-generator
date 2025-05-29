@@ -1,26 +1,28 @@
 @import "tailwindcss";
+@plugin "daisyui";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+  --color-base-100: oklch(1 0 none);
+  --color-base-200: oklch(0.94 0 0);
+  --color-base-300: oklch(0.87 0 0);
+  --color-base-content: oklch(0.33 0 0);
+  --color-primary: oklch(0.72 0.16 39.85);
+  --color-primary-content: oklch(1 0 none);
+  --color-secondary: oklch(0.37 0.05 269.22);
+  --color-secondary-content: oklch(1 0 none);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@plugin "daisyui/theme" {
+  name: "dark";
+  --default-font-family: var(--font-sf);
+  --color-base-100: oklch(0.22 0 none);
+  --color-base-200: oklch(0.25 0 0);
+  --color-base-300: oklch(0.29 0 0);
+  --color-base-content: oklch(1 0 none);
+  --color-primary: oklch(0.72 0.16 39.85);
+  --color-primary-content: oklch(1 0 none);
+  --color-secondary: oklch(0.37 0.05 269.22);
+  --color-secondary-content: oklch(1 0 none);
 }
