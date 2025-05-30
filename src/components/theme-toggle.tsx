@@ -2,40 +2,22 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { clsx } from "clsx";
+import { useTheme } from "next-themes";
 
 export type Theme = "light" | "dark";
 
 export const ThemeToggle = () => {
-  const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof localStorage !== "undefined") {
-      const storedTheme = localStorage.getItem("theme") as Theme | null;
-      if (storedTheme) {
-        return storedTheme;
-      }
-    }
-    const prefersDark =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches;
-    return prefersDark ? "dark" : "light";
-  });
-
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    if (typeof localStorage !== "undefined") {
-      localStorage.setItem("theme", theme);
-    }
-  }, [theme]);
+  const { theme, setTheme } = useTheme();
 
   const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
+    setTheme(theme === "light" ? "dark" : "light");
   };
 
   return (
     <div id="switchThemeMode" className={clsx("h-7 lg:h-auto", theme)}>
       <label className="relative flex items-center justify-center w-16 h-8 rounded-full cursor-pointer transition-all duration-500 ease-in-out bg-gradient-to-b from-[#73bbff] to-[#a2d1fd]">
         <input
-          value={theme}
+          value={theme ?? "false"}
           onChange={toggleTheme}
           type="checkbox"
           id="switch"

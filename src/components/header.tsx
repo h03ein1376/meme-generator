@@ -4,7 +4,7 @@ import { ThemeToggle } from "./theme-toggle";
 
 export const Header = () => {
   return (
-    <header className="shadow-lg bg-base-100 dark:bg-base-300">
+    <header className="shadow-lg bg-base-100 dark:bg-base-300 z-30">
       <div className="flex justify-between items-center px-6 py-4 w-full ">
         <Link href="/">
           <Image
