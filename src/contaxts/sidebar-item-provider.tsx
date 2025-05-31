@@ -1,19 +1,14 @@
 "use client";
 
+import { SidebrSectionType } from "@/types/sidebar-section";
 import { createContext, useContext } from "react";
 
-export type SidebarSectionContextType = {
-  title: string;
-  url: string;
-  type: "template" | "sticker";
-};
-
 type SidebarSectionPoviderType = {
-  value: SidebarSectionContextType;
+  value: SidebrSectionType;
   children: React.ReactNode;
 };
 export const SidebarSectionContext = createContext<
-  SidebarSectionContextType | undefined
+  SidebrSectionType | undefined
 >(undefined);
 
 export const useSidebarSectionContext = () => {

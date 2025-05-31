@@ -1,11 +1,18 @@
 import { BASE_URL } from "./const";
 
 export const END_POINTS = {
-  MEMES: BASE_URL + "/template-library/home-page-memes",
-  BANNERS: BASE_URL + "/template-library/home-page-banners",
-  WALLPAPERS: BASE_URL + "/template-library/home-page-wallpapers",
-  SPARKY: BASE_URL + "/sticker-library/home-page-others",
-  VOID: BASE_URL + "/sticker-library/home-page-void",
-  TRUMP: BASE_URL + "/sticker-library/home-page-trump",
-  BILLY_CAT: BASE_URL + "/sticker-library/home-page-stickers",
+  HOME_MEMES: "/template-library/home-page-memes",
+  HOME_BANNERS: "/template-library/home-page-banners",
+  HOME_WALLPAPERS: "/template-library/home-page-wallpapers",
+  HOME_SPARKY: "/sticker-library/home-page-others",
+  HOME_VOID: "/sticker-library/home-page-void",
+  HOME_TRUMP: "/sticker-library/home-page-trump",
+  HOME_BILLY_CAT: "/sticker-library/home-page-stickers",
+  MEMES: "/template-library/memes",
+  BANNERS: "/template-library/banners",
+  WALLPAPERS: "/template-library/wallpapers",
+  SPARKY: "/sticker-library/others",
+  VOID: "/sticker-library/void",
+  TRUMP: "/sticker-library/trump",
+  BILLY_CAT: "/sticker-library/stickers",
 };

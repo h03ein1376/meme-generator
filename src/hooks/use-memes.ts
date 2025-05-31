@@ -1,5 +1,5 @@
+import { api } from "@/utils/axios";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import axios from "axios";
 
 interface DataType {
   id: number;
@@ -26,7 +26,7 @@ export function useMemes(url: string) {
   return useSuspenseQuery({
     queryKey: [url],
     queryFn: async (): Promise<ApiResponse> => {
-      const response = await axios.get<ApiResponse>(url);
+      const response = await api.get<ApiResponse>(url);
       return response.data;
     },
   });
