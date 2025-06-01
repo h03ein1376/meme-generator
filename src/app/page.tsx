@@ -1,9 +1,9 @@
+import { Mobilebar } from "@/components/mobilebar/mobilebar";
 import { Header } from "@/components/header";
 import { Sidebar } from "@/components/sidebar/sidebar";
-type HomeProps = {
-  searchParams: { section?: string };
-};
-export default async function Home({ searchParams }: HomeProps) {
+import { PageProps } from "../../.next/types/app/page";
+
+export default async function Home({ searchParams }: PageProps) {
   const { section } = await searchParams;
 
   return (
@@ -15,6 +15,7 @@ export default async function Home({ searchParams }: HomeProps) {
           <menu className="min-h-14 bg-base-200 dark:bg-base-300 rounded-b-lg"></menu>
         </div>
       </section>
+      <Mobilebar section={section} />
     </main>
   );
 }

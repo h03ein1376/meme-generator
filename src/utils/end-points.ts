@@ -1,5 +1,3 @@
-import { BASE_URL } from "./const";
-
 export const END_POINTS = {
   HOME_MEMES: "/template-library/home-page-memes",
   HOME_BANNERS: "/template-library/home-page-banners",

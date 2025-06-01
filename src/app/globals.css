@@ -3,7 +3,9 @@
 
 @plugin "@iconify/tailwind4";
 
-@plugin "daisyui";
+@plugin "daisyui" {
+  exclude: rootscrollgutter;
+}
 @plugin "daisyui/theme" {
   name: "light";
   --color-base-100: oklch(1 0 none);

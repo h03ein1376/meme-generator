@@ -14,7 +14,7 @@ export const ImageItem = ({ image, alt }: ImageItemProps) => {
       alt={alt}
       src={image}
       className={clsx(
-        "cursor-pointer bg-base-100 rounded-lg aspect-[124/68] w-full h-auto ",
+        "cursor-pointer bg-base-100 rounded-lg  w-full h-full ",
         type === "template" ? "object-cover" : "object-contain"
       )}
     />

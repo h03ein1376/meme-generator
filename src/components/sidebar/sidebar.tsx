@@ -6,7 +6,7 @@ type SidebarProps = {
 };
 export const Sidebar = ({ section }: SidebarProps) => {
   return (
-    <aside className="py-6 px-5 text-base-content bg-base-200 max-w-max hidden md:flex flex-col gap-6 w-full h-[calc(100vh-80px)] overflow-y-auto ">
+    <aside className="py-6 px-5 text-base-content bg-base-200 max-w-max hidden lg:flex flex-col gap-6 w-full h-[calc(100vh-80px)] overflow-y-auto ">
       {section ? (
         <SidebarDetils section={section} />
       ) : (

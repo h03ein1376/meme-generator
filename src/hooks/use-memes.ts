@@ -17,17 +17,20 @@ export interface StickerType extends DataType {
 
 export type ApiResponse = {
   data: TemplateType[] | StickerType[];
-  paging: any;
+  paging: boolean;
   message: string;
   statusCode: number;
   hasAnyData: boolean;
 };
-export function useMemes(url: string) {
-  return useSuspenseQuery({
-    queryKey: [url],
-    queryFn: async (): Promise<ApiResponse> => {
+export function useMemes(url: string, secondUrl?: string) {
+  return useSuspenseQuery<(TemplateType | StickerType)[]>({
+    queryKey: [url, secondUrl],
+    queryFn: async (): Promise<(TemplateType | StickerType)[]> => {
       const response = await api.get<ApiResponse>(url);
-      return response.data;
+      let response2;
+      if (secondUrl) response2 = await api.get<ApiResponse>(secondUrl);
+
+      return [...response.data.data, ...(response2?.data?.data ?? [])];
     },
   });
 }
