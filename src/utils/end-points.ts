@@ -13,4 +13,5 @@ export const END_POINTS = {
   VOID: "/sticker-library/void",
   TRUMP: "/sticker-library/trump",
   BILLY_CAT: "/sticker-library/stickers",
+  GET_ONE_TEMPLATE: (id: number) => `/template-library/${id}`,
 };
