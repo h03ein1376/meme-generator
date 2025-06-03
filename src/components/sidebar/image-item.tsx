@@ -1,18 +1,22 @@
 "use client";
 
+import { useSidebarSectionContext } from "@/hooks/use-sidebar-section-context";
 import clsx from "clsx";
 import Image from "next/image";
+import { MouseEventHandler } from "react";
 
 type ImageItemProps = {
   image: string;
   alt: string;
+  onClick: MouseEventHandler<HTMLImageElement>;
 };
 
-export const ImageItem = ({ image, alt }: ImageItemProps) => {
+export const ImageItem = ({ image, alt, onClick }: ImageItemProps) => {
   const { type } = useSidebarSectionContext();
 
   return (
     <Image
+      onClick={onClick}
       alt={alt}
       src={image}
       width={0}
