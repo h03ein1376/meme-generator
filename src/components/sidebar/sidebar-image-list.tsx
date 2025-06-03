@@ -1,8 +1,10 @@
 "use client";
 
-import { useSidebarSectionContext } from "@/contaxts/sidebar-item-provider";
+import { useSidebarSectionContext } from "@/hooks/use-sidebar-section-context";
 import { ImageItem } from "./image-item";
-import { useMemes, TemplateType, StickerType } from "@/hooks/use-memes";
+import { useMemes } from "@/hooks/use-memes";
+import { Template } from "@/types/template";
+import { Sticker } from "@/types/sticker";
 
 export const SidebarImageList = ({ isHome = true }) => {
   const { type, homeUrl, url } = useSidebarSectionContext();
@@ -13,8 +15,8 @@ export const SidebarImageList = ({ isHome = true }) => {
       key={item.id}
       image={
         type === "template"
-          ? (item as TemplateType).thumbnail
-          : (item as StickerType).sticker
+          ? (item as Template).thumbnail
+          : (item as Sticker).sticker
       }
       alt={item.library_type}
     />

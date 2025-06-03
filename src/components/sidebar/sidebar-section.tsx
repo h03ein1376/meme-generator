@@ -1,9 +1,8 @@
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { SidebarSectionSkeleton } from "./sidebar-section-skeleton";
-import { SidebarSectionProvider } from "@/contaxts/sidebar-item-provider";
+import { SidebarSectionProvider } from "@/contaxts/sidebar-section-provider";
 import { SidebarImageList } from "./sidebar-image-list";
-import { StickerType, TemplateType } from "@/hooks/use-memes";
 import { Error } from "../error";
 import { SidebarSectionWrapper } from "./sidebar-section-wrapper";
 import { SidebrSectionType } from "@/types/sidebar-section";

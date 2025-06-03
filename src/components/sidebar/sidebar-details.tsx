@@ -1,4 +1,4 @@
-import { SidebarSectionProvider } from "@/contaxts/sidebar-item-provider";
+import { SidebarSectionProvider } from "@/contaxts/sidebar-section-provider";
 import { SIDEBAR_SECTIONS } from "@/utils/const";
 import Link from "next/link";
 import { ErrorBoundary } from "react-error-boundary";
@@ -30,7 +30,7 @@ export const SidebarDetils = ({
         <span className="icon-[iconoir--arrow-left]" />
         <h4 className="uppercase font-medium">{section?.title}</h4>
       </Link>
-      <div className="grid grid-cols-[186px_186px] auto-rows-[123px] gap-4">
+      <div className="grid grid-cols-[186px_186px] auto-rows-[123px] gap-4 overflow-y-auto">
         <SidebarSectionProvider value={section}>
           <ErrorBoundary
             fallback={

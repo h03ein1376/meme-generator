@@ -1,5 +1,5 @@
 "use client";
-import { useSidebarSectionContext } from "@/contaxts/sidebar-item-provider";
+import { useSidebarSectionContext } from "@/hooks/use-sidebar-section-context";
 import Link from "next/link";
 
 import { ReactNode } from "react";

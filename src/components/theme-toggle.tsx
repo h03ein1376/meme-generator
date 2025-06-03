@@ -3,8 +3,6 @@
 import React from "react";
 import { useTheme } from "next-themes";
 
-export type Theme = "light" | "dark";
-
 export const ThemeToggle = () => {
   const { theme, setTheme } = useTheme();
 

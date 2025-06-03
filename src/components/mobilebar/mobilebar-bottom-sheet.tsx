@@ -1,4 +1,4 @@
-import { SidebarSectionProvider } from "@/contaxts/sidebar-item-provider";
+import { SidebarSectionProvider } from "@/contaxts/sidebar-section-provider";
 import { SIDEBAR_SECTIONS } from "@/utils/const";
 import Link from "next/link";
 import { redirect } from "next/navigation";
