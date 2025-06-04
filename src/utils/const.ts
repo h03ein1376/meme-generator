@@ -1,9 +1,10 @@
-import { SidebrSectionType } from "@/types/sidebar-section";
+import { SidebrSection } from "@/types/sidebar-section";
 import { END_POINTS } from "./end-points";
+import { Ratio, RatioItem } from "@/types/ratio";
 
 export const BASE_URL = "https://memebox-app-bxjiq.ondigitalocean.app/api";
 
-export const SIDEBAR_SECTIONS: SidebrSectionType[] = [
+export const SIDEBAR_SECTIONS: SidebrSection[] = [
   {
     title: "memes",
     homeUrl: END_POINTS.HOME_MEMES,
@@ -45,5 +46,28 @@ export const SIDEBAR_SECTIONS: SidebrSectionType[] = [
     homeUrl: END_POINTS.HOME_BILLY_CAT,
     url: END_POINTS.BILLY_CAT,
     type: "sticker",
+  },
+];
+
+export const RATIO_ITEMS: RatioItem[] = [
+  {
+    title: "Twitter Banner",
+    icon: "icon-[iconoir--twitter]",
+    ratio: Ratio["3:1"],
+  },
+  {
+    title: "Mobile Wallpaper",
+    icon: "icon-[iconoir--smartphone-device]",
+    ratio: Ratio["9:16"],
+  },
+  {
+    title: "Desktop Wallpaper",
+    icon: "icon-[iconoir--apple-imac-2021]",
+    ratio: Ratio["16:9"],
+  },
+  {
+    title: "Square",
+    icon: "icon-[iconoir--square]",
+    ratio: Ratio["1:1"],
   },
 ];

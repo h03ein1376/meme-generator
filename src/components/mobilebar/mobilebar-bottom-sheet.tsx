@@ -33,7 +33,7 @@ export default function MobilebarBottomSheet({
               ✕
             </Link>
           </div>
-          <div className="grid h-full grid-cols-3 auto-rows-[123px] gap-4 overflow-y-auto max-h-[50vh]">
+          <div className="grid h-full grid-cols-3 auto-rows-[123px] gap-4 overflow-y-auto max-h-[30vh]">
             <SidebarSectionProvider value={section}>
               <ErrorBoundary
                 fallback={

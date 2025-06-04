@@ -1,4 +1,4 @@
-export type SidebrSectionType = {
+export type SidebrSection = {
   title: string;
   url: string;
   homeUrl: string;

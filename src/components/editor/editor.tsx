@@ -1,28 +1,22 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { Canvas, FabricImage } from "fabric";
-import { useTemplateContext } from "@/hooks/use-template-context";
-import { useTemplate } from "@/hooks/use-template";
+import { useEffect, useState } from "react";
+import { FabricImage } from "fabric";
 import { addTemplateToCanvas, TEMPLATE_ID } from "@/utils/fabric-utils";
 import clsx from "clsx";
 import { useDropzone } from "react-dropzone";
 import { UploadDropZone } from "./upload-drop-zone";
-
-const RATIO_MAP: Record<string, number> = {
-  "1:1": 1,
-  "4:3": 4 / 3,
-  "16:9": 16 / 9,
-  "9:16": 9 / 16,
-};
+import { useCanvas } from "@/hooks/use-canvas";
+import { RATIO_ITEMS } from "@/utils/const";
+import { Ratio } from "@/types/ratio";
 
 export function Editor() {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [canvas, setCanvas] = useState<Canvas | null>(null);
-  const [ratio, setRatio] = useState("16:9");
+  const { canvasRef, containerRef, canvas, ratio, setRatio, isLoading } =
+    useCanvas();
+
   const [fileReaderLoading, setFileReaderLoading] = useState(false);
 
   const dropzoneState = useDropzone({
+    disabled: fileReaderLoading,
     noClick: true,
     maxFiles: 1,
     accept: {
@@ -46,96 +40,12 @@ export function Editor() {
         return;
       }
     };
+    reader.onerror = () => {
+      setFileReaderLoading(false);
+    };
     setFileReaderLoading(true);
     reader.readAsDataURL(acceptedFiles[0]);
   }, [acceptedFiles, canvas]);
-  useEffect(() => {
-    if (!canvasRef.current) return;
-    const fabricCanvas = new Canvas(canvasRef.current, {
-      backgroundColor: "#ebeaed",
-      selection: true,
-    });
-    setCanvas(fabricCanvas);
-    return () => {
-      fabricCanvas.dispose();
-    };
-  }, []);
-
-  const { selectedTemplate, setSelectedTemplate } = useTemplateContext();
-  const { data, isLoading, error } = useTemplate(selectedTemplate);
-  useEffect(() => {
-    if (!canvas || !data) return;
-
-    addTemplateToCanvas(canvas, data);
-    setSelectedTemplate(undefined);
-  }, [data, canvas]);
-
-  useEffect(() => {
-    if (error) {
-      //todo: toast error if there is an error fetching the template
-      console.log("Error fetching template data", error);
-      setSelectedTemplate(undefined);
-    }
-  }, [error]);
-
-  useEffect(() => {
-    if (!containerRef.current || !canvas) return;
-
-    const observer = new ResizeObserver(() => {
-      console.log("Resizing canvas...");
-
-      const containerWidth = containerRef.current!.offsetWidth;
-      const containerHeight = containerRef.current!.offsetHeight;
-      const prevWidth = canvas.getWidth();
-      const prevHeight = canvas.getHeight();
-
-      const aspect = prevWidth / prevHeight;
-      let width = containerWidth;
-      let height = width / aspect;
-
-      if (height > containerHeight) {
-        height = containerHeight;
-        width = height * aspect;
-      }
-
-      canvas.setDimensions({ width, height });
-      const scaleX = width / prevWidth;
-      const scaleY = height / prevHeight;
-
-      canvas.getObjects().forEach((obj) => {
-        obj.scaleX = (obj.scaleX ?? 1) * scaleX;
-        obj.scaleY = (obj.scaleY ?? 1) * scaleY;
-        obj.left = (obj.left ?? 0) * scaleX;
-        obj.top = (obj.top ?? 0) * scaleY;
-        obj.setCoords();
-      });
-
-      canvas.renderAll();
-    });
-
-    observer.observe(containerRef.current);
-
-    return () => observer.disconnect();
-  }, [canvas]);
-
-  useEffect(() => {
-    if (!containerRef.current || !canvas) return;
-
-    const containerWidth = containerRef.current!.offsetWidth;
-    const containerHeight = containerRef.current!.offsetHeight;
-    const aspect = RATIO_MAP[ratio];
-    let width = containerWidth;
-    let height = width / aspect;
-
-    if (height > containerHeight) {
-      height = containerHeight;
-      width = height * aspect;
-    }
-    console.log("Setting canvas dimensions:", width, height);
-
-    canvas.setDimensions({ width, height });
-    canvas.renderAll();
-  }, [ratio]);
 
   const isHasTemplate = canvas
     ?.getObjects()
@@ -148,11 +58,13 @@ export function Editor() {
         <select
           className="p-2 border rounded"
           value={ratio}
-          onChange={(e) => setRatio(e.target.value)}
+          onChange={(e) => {
+            setRatio(parseFloat(e.target.value) as Ratio);
+          }}
         >
-          {Object.keys(RATIO_MAP).map((r) => (
-            <option key={r} value={r}>
-              {r}
+          {RATIO_ITEMS.map((ratioItem) => (
+            <option key={ratioItem.ratio} value={ratioItem.ratio}>
+              {ratioItem.title}
             </option>
           ))}
         </select>
@@ -161,7 +73,7 @@ export function Editor() {
         ref={containerRef}
         className={clsx(
           !isHasTemplate && "invisible",
-          "w-full  mx-auto absolute  top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 max-w-3/4 aspect-square h-auto flex items-center justify-center"
+          "w-full  mx-auto absolute  top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 max-w-3/4 aspect-square h-auto flex items-center justify-center bg-fuchsia-300"
         )}
       >
         <canvas ref={canvasRef} />

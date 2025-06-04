@@ -5,9 +5,9 @@ import { SidebarSectionProvider } from "@/contaxts/sidebar-section-provider";
 import { SidebarImageList } from "./sidebar-image-list";
 import { Error } from "../error";
 import { SidebarSectionWrapper } from "./sidebar-section-wrapper";
-import { SidebrSectionType } from "@/types/sidebar-section";
+import { SidebrSection } from "@/types/sidebar-section";
 
-export default function SidebarSection(props: SidebrSectionType) {
+export default function SidebarSection(props: SidebrSection) {
   return (
     <SidebarSectionProvider value={props}>
       <ErrorBoundary

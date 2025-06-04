@@ -1,15 +1,15 @@
 "use client";
 
-import { SidebrSectionType } from "@/types/sidebar-section";
+import { SidebrSection } from "@/types/sidebar-section";
 import { createContext, useContext } from "react";
 
 type SidebarSectionPovider = {
-  value: SidebrSectionType;
+  value: SidebrSection;
   children: React.ReactNode;
 };
-export const SidebarSectionContext = createContext<
-  SidebrSectionType | undefined
->(undefined);
+export const SidebarSectionContext = createContext<SidebrSection | undefined>(
+  undefined
+);
 
 export const SidebarSectionProvider = ({
   children,

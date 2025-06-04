@@ -1,15 +1,11 @@
-import { Template } from "@/types/template";
-import { BASE_URL } from "@/utils/const";
-import { END_POINTS } from "@/utils/end-points";
+import { Sticker } from "@/types/sticker";
 import { addTemplateToCanvas } from "@/utils/fabric-utils";
 import { useMutation } from "@tanstack/react-query";
 import { Canvas, FabricImage } from "fabric";
 
-export function useTemplateMutation(canvas?: Canvas) {
-  return useMutation<FabricImage, Error, Template>({
-    mutationFn: (selectedTemplate: Template) => {
-      const url = BASE_URL + END_POINTS.GET_ONE_TEMPLATE(selectedTemplate.id);
-
+export function useStickerMutation(canvas?: Canvas) {
+  return useMutation<FabricImage, Error, Sticker>({
+    mutationFn: (sticker: Sticker) => {
       return new Promise<FabricImage>((resolve, reject) => {
         const controller = new AbortController();
         const { signal } = controller;
@@ -20,7 +16,7 @@ export function useTemplateMutation(canvas?: Canvas) {
 
         signal.addEventListener("abort", abortHandler);
 
-        FabricImage.fromURL(url, { crossOrigin: "anonymous" })
+        FabricImage.fromURL(sticker.sticker, { crossOrigin: "anonymous" })
           .then((img) => {
             if (signal.aborted) {
               reject(new DOMException("aborted", "AbortError"));

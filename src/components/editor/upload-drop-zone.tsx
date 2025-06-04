@@ -9,16 +9,14 @@ export const UploadDropZone = ({
   getInputProps,
   isDragAccept,
   isDragReject,
-  className,
-}: DropzoneState & React.HTMLAttributes<HTMLDivElement>) => {
+}: DropzoneState) => {
   return (
     <div
       {...getRootProps({
         className: clsx(
           "dropzone w-full h-full flex justify-center items-center ",
           isDragAccept && "border-dashed border-2 border-success ",
-          isDragReject && "border-dashed border-2 border-error ",
-          className
+          isDragReject && "border-dashed border-2 border-error "
         ),
       })}
     >
