@@ -2,7 +2,7 @@ import { SidebrSection } from "@/types/sidebar-section";
 import { END_POINTS } from "./end-points";
 import { Ratio, RatioItem } from "@/types/ratio";
 
-export const BASE_URL = "https://memebox-app-bxjiq.ondigitalocean.app/api";
+export const BASE_URL = "https://api-meme-box.bestudios.dev/api";
 
 export const CANVAS_BG_COLOR = "#ebeaed";
 
