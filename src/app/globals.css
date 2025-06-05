@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
+@theme {
+  --color-primary-light: rgb(250 246 245);
+}
+
 @plugin "@iconify/tailwind4";
 
 @plugin "daisyui" {
@@ -33,4 +37,11 @@
   --color-primary-content: oklch(1 0 none);
   --color-secondary: oklch(0.37 0.05 269.22);
   --color-secondary-content: oklch(1 0 none);
+}
+
+.collapse-reverse:is([open], :focus:not(.collapse-close)),
+.collapse-reverse:not(.collapse-close):has(
+    > input:is([type="checkbox"], [type="radio"]):checked
+  ) {
+  @apply grid grid-rows-[1fr_max-content];
 }

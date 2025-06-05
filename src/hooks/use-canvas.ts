@@ -1,113 +1,101 @@
 "use client";
 
-import { Ratio } from "@/types/ratio";
-import { Sticker } from "@/types/sticker";
-import { Template } from "@/types/template";
-import { addTemplateToCanvas, addStickerToCanvas } from "@/utils/fabric-utils";
-import { Canvas } from "fabric";
-import { useEffect, useRef, useState } from "react";
-import { useEditorContext } from "./use-editor-context";
-import { useStickerMutation } from "./use-sticker";
-import { useTemplateMutation } from "./use-template";
+import { useEffect, useRef, useCallback } from "react";
+import { MyCanvas } from "@/utils/my-canvas";
+import { useEditorStore } from "@/store/editor-store";
 
 export const useCanvas = () => {
+  const ratio = useEditorStore((state) => state.ratio);
+  const canvas = useEditorStore((state) => state.canvas);
+  const setCanvas = useEditorStore((state) => state.setCanvas);
+  const setIsHasSelection = useEditorStore((state) => state.setIsHasSelection);
+  const setIsHasTemplate = useEditorStore((state) => state.setIsHasTemplate);
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
   const containerRef = useRef<HTMLDivElement | null>(null);
-
-  const [canvas, setCanvas] = useState<Canvas>();
-  const [ratio, setRatio] = useState<Ratio>(Ratio["16:9"]);
 
   useEffect(() => {
     if (!canvasRef.current) return;
-    const fabricCanvas = new Canvas(canvasRef.current, {
+
+    const fabricCanvas = new MyCanvas(canvasRef.current, {
       backgroundColor: "#ebeaed",
       selection: true,
     });
+
+    const checkTemplate = () =>
+      setIsHasTemplate(fabricCanvas?.isHasTemplate() ?? false);
+
+    const handleSelection = () =>
+      setIsHasSelection(fabricCanvas?.isHasSelection() ?? false);
+
+    checkTemplate();
+    handleSelection();
+
+    fabricCanvas.on("object:added", checkTemplate);
+    fabricCanvas.on("object:removed", checkTemplate);
+    fabricCanvas.on("selection:created", handleSelection);
+    fabricCanvas.on("selection:updated", handleSelection);
+    fabricCanvas.on("selection:cleared", handleSelection);
+
+    fabricCanvas.renderAll();
     setCanvas(fabricCanvas);
+
     return () => {
       fabricCanvas.dispose();
     };
   }, []);
 
-  useEffect(() => {
+  const resizeCanvas = useCallback(() => {
     if (!containerRef.current || !canvas) return;
 
-    const observer = new ResizeObserver(() => {
-      const containerWidth = containerRef.current!.offsetWidth;
-      const containerHeight = containerRef.current!.offsetHeight;
-      const prevWidth = canvas.getWidth();
-      const prevHeight = canvas.getHeight();
+    const containerWidth = containerRef.current.offsetWidth;
+    const containerHeight = containerRef.current.offsetHeight;
+    const prevWidth = canvas.getWidth() || 1;
+    const prevHeight = canvas.getHeight() || 1;
 
-      const aspect = prevWidth / prevHeight;
-      let width = containerWidth;
-      let height = width / aspect;
-
-      if (height > containerHeight) {
-        height = containerHeight;
-        width = height * aspect;
-      }
-
-      canvas.setDimensions({ width, height });
-      const scaleX = width / prevWidth;
-      const scaleY = height / prevHeight;
-
-      canvas.getObjects().forEach((obj) => {
-        obj.scaleX = (obj.scaleX ?? 1) * scaleX;
-        obj.scaleY = (obj.scaleY ?? 1) * scaleY;
-        obj.left = (obj.left ?? 0) * scaleX;
-        obj.top = (obj.top ?? 0) * scaleY;
-        obj.setCoords();
-      });
-
-      canvas.renderAll();
-    });
-
-    observer.observe(containerRef.current);
-
-    return () => observer.disconnect();
-  }, [canvas]);
-
-  useEffect(() => {
-    if (!containerRef.current || !canvas) return;
-
-    const containerWidth = containerRef.current!.offsetWidth;
-    const containerHeight = containerRef.current!.offsetHeight;
+    const aspect = prevWidth / prevHeight;
     let width = containerWidth;
-    let height = width / ratio;
+    let height = width / aspect;
 
     if (height > containerHeight) {
       height = containerHeight;
-      width = height * ratio;
+      width = height * aspect;
     }
 
     canvas.setDimensions({ width, height });
-    canvas.renderAll();
-  }, [ratio]);
 
-  const templateMutation = useTemplateMutation(canvas);
-  const stickerMutation = useStickerMutation(canvas);
-  const { setOnTemplateClick, setOnStikerClick } = useEditorContext();
+    const scaleX = width / prevWidth;
+    const scaleY = height / prevHeight;
+
+    canvas.getObjects().forEach((obj) => {
+      obj.scaleX = (obj.scaleX ?? 1) * scaleX;
+      obj.scaleY = (obj.scaleY ?? 1) * scaleY;
+      obj.left = (obj.left ?? 0) * scaleX;
+      obj.top = (obj.top ?? 0) * scaleY;
+      obj.setCoords();
+    });
+
+    canvas.renderAll();
+  }, [canvas]);
 
   useEffect(() => {
-    if (!canvas) return;
+    if (!containerRef.current || !canvas) return;
 
-    setOnTemplateClick(() => (template: Template) => {
-      if (!canvas) return;
-      templateMutation.mutate(template);
-    });
-    setOnStikerClick(() => (sticker: Sticker) => {
-      if (!canvas) return;
-      stickerMutation.mutate(sticker);
-    });
-  }, [canvas]);
+    const observer = new ResizeObserver(() => resizeCanvas());
+    observer.observe(containerRef.current);
+
+    return () => observer.disconnect();
+  }, [canvas, resizeCanvas]);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const containerWidth = containerRef.current.offsetWidth;
+    const containerHeight = containerRef.current.offsetHeight;
+    canvas?.setRatio(containerWidth, containerHeight, ratio);
+  }, [canvas, ratio]);
 
   return {
     canvasRef,
     containerRef,
-    canvas,
-    ratio,
-    setRatio,
-    isLoading: templateMutation.isPending || stickerMutation.isPending,
   };
 };

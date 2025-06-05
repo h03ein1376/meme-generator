@@ -7,6 +7,13 @@ export enum Ratio {
 
 export type RatioItem = {
   title: string;
+  shortTitle: string;
   icon: string;
   ratio: Ratio;
+};
+
+export const getRatioKey = (value: Ratio): string | undefined => {
+  return Object.keys(Ratio).find(
+    (key) => Ratio[key as keyof typeof Ratio] === value
+  );
 };

@@ -1,15 +1,51 @@
 "use client";
 
+import { useEditorStore } from "@/store/editor-store";
 import clsx from "clsx";
-import { DropzoneState, useDropzone } from "react-dropzone";
+import { FabricImage } from "fabric";
+import { useEffect } from "react";
+import { useDropzone } from "react-dropzone";
 
-export const UploadDropZone = ({
-  open,
-  getRootProps,
-  getInputProps,
-  isDragAccept,
-  isDragReject,
-}: DropzoneState) => {
+export const UploadDropZone = () => {
+  const canvas = useEditorStore((state) => state.canvas);
+  const isLoading = useEditorStore((state) => state.isLoading);
+  const setIsLoading = useEditorStore((state) => state.setIsLoading);
+
+  const {
+    open,
+    getRootProps,
+    getInputProps,
+    isDragAccept,
+    isDragReject,
+    acceptedFiles,
+  } = useDropzone({
+    disabled: isLoading,
+    noClick: true,
+    maxFiles: 1,
+    accept: {
+      "image/*": [".jpeg", ".jpg", ".png", ".webp"],
+    },
+  });
+
+  useEffect(() => {
+    if (!canvas || !acceptedFiles?.length) return;
+
+    const reader = new FileReader();
+    reader.onload = async () => {
+      setIsLoading(false);
+      const dataURL = reader.result as string;
+
+      try {
+        const img = await FabricImage.fromURL(dataURL);
+        canvas.addTemplate(img);
+      } catch (error) {
+        console.error("Error loading image:", error);
+      }
+    };
+    reader.onerror = () => setIsLoading(false);
+    setIsLoading(true);
+    reader.readAsDataURL(acceptedFiles[0]);
+  }, [acceptedFiles, canvas]);
   return (
     <div
       {...getRootProps({

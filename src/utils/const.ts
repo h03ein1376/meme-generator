@@ -4,6 +4,8 @@ import { Ratio, RatioItem } from "@/types/ratio";
 
 export const BASE_URL = "https://memebox-app-bxjiq.ondigitalocean.app/api";
 
+export const CANVAS_BG_COLOR = "#ebeaed";
+
 export const SIDEBAR_SECTIONS: SidebrSection[] = [
   {
     title: "memes",
@@ -52,21 +54,25 @@ export const SIDEBAR_SECTIONS: SidebrSection[] = [
 export const RATIO_ITEMS: RatioItem[] = [
   {
     title: "Twitter Banner",
+    shortTitle: "X Banner",
     icon: "icon-[iconoir--twitter]",
     ratio: Ratio["3:1"],
   },
   {
     title: "Mobile Wallpaper",
+    shortTitle: "Mobile",
     icon: "icon-[iconoir--smartphone-device]",
     ratio: Ratio["9:16"],
   },
   {
     title: "Desktop Wallpaper",
+    shortTitle: "Desktop",
     icon: "icon-[iconoir--apple-imac-2021]",
     ratio: Ratio["16:9"],
   },
   {
     title: "Square",
+    shortTitle: "Square",
     icon: "icon-[iconoir--square]",
     ratio: Ratio["1:1"],
   },

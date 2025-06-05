@@ -1,7 +1,7 @@
 "use client";
 
 import { SidebrSection } from "@/types/sidebar-section";
-import { createContext, useContext } from "react";
+import { createContext } from "react";
 
 type SidebarSectionPovider = {
   value: SidebrSection;
