@@ -25,8 +25,9 @@ export const useHistoryStore = create<HistoryStore>((set, get) => ({
     const { undoStack, redoStack } = get();
     if (undoStack.length > 1) {
       const current = undoStack.pop();
+      if (!current) return;
       const prev = undoStack[undoStack.length - 1];
-      redoStack.push(current!!);
+      redoStack.push(current);
       await canvas.loadFromJSON(prev);
       canvas.renderAll();
       set({ undoStack: [...undoStack], redoStack: [...redoStack] });
@@ -37,7 +38,8 @@ export const useHistoryStore = create<HistoryStore>((set, get) => ({
     const { undoStack, redoStack } = get();
     if (redoStack.length > 0) {
       const next = redoStack.pop();
-      undoStack.push(next!!);
+      if (!next) return;
+      undoStack.push(next);
       await canvas.loadFromJSON(next!!);
       canvas.renderAll();
       set({ undoStack: [...undoStack], redoStack: [...redoStack] });

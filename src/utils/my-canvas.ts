@@ -1,4 +1,4 @@
-import { Canvas, FabricImage, FabricText, Textbox } from "fabric";
+import { Canvas, FabricImage, Textbox } from "fabric";
 import { CANVAS_BG_COLOR } from "./const";
 
 export const TEMPLATE_ID = "template-image";

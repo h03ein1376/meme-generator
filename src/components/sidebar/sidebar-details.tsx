@@ -2,7 +2,6 @@ import { SidebarSectionProvider } from "@/contaxts/sidebar-section-provider";
 import { SIDEBAR_SECTIONS } from "@/utils/const";
 import Link from "next/link";
 import { ErrorBoundary } from "react-error-boundary";
-import { SidebarSectionWrapper } from "./sidebar-section-wrapper";
 import { Suspense } from "react";
 import { SidebarSectionSkeleton } from "./sidebar-section-skeleton";
 import { SidebarImageList } from "./sidebar-image-list";

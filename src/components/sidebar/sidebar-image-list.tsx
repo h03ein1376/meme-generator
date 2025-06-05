@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useSidebarSectionContext } from "@/hooks/use-sidebar-section-context";
 import { ImageItem } from "./image-item";
 import { useMemes } from "@/hooks/use-memes";
