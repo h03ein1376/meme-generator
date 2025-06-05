@@ -1,4 +1,4 @@
-import { Canvas, FabricImage } from "fabric";
+import { Canvas, FabricImage, FabricText, Textbox } from "fabric";
 import { CANVAS_BG_COLOR } from "./const";
 
 export const TEMPLATE_ID = "template-image";
@@ -129,6 +129,27 @@ export class MyCanvas extends Canvas {
 
     this.add(image);
     this.setActiveObject(image);
+    this.renderAll();
+  }
+  addText() {
+    const canvasWidth = this.getWidth();
+    const canvasHeight = this.getHeight();
+    const text = new Textbox("MEME GENERATOR", { editable: true });
+    const imgWidth = text.width ?? 1;
+    const imgHeight = text.height ?? 1;
+
+    const scale = Math.min(canvasWidth / imgWidth, canvasHeight / imgHeight);
+    text.scale(scale / 2);
+
+    text.set({
+      left: canvasWidth / 2,
+      top: canvasHeight / 2,
+      originX: "center",
+      originY: "center",
+    });
+
+    this.add(text);
+    this.setActiveObject(text);
     this.renderAll();
   }
 
