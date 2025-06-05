@@ -1,6 +1,7 @@
 import { SIDEBAR_SECTIONS } from "@/utils/const";
 import Link from "next/link";
 import MobilebarBottomSheet from "./mobilebar-bottom-sheet";
+import { ZoomPanController } from "../editor/zoom-pan-controller";
 
 type MobilebarProps = {
   section?: string;
@@ -10,7 +11,7 @@ export const Mobilebar = ({ section }: MobilebarProps) => {
     <div className="fixed lg:hidden bottom-0 w-full z-30 flex flex-col ">
       {section && <MobilebarBottomSheet key={section} section={section} />}
 
-      <div className="collapse  rounded-none bg-[#DFDEDF] dark:bg-[#c3c1c85e]">
+      <div className="collapse grid-rows-[max-content_max-content_0fr] rounded-none bg-[#DFDEDF] dark:bg-[#c3c1c85e]">
         <input
           defaultChecked={!!section}
           type="checkbox"
@@ -20,7 +21,8 @@ export const Mobilebar = ({ section }: MobilebarProps) => {
         <div className="collapse-title flex flex-col items-center justify-center p-0 peer-checked:rotate-180 transition-all duration-500">
           <span className="collapse-arrow icon-[iconoir--nav-arrow-up] h-6 w-6 text-secondary dark:text-base-content" />
         </div>
-        <div className="collapse-content bg-base-100 dark:bg-base-200 flex items-center justify-between sm:justify-center gap-1 overflow-x-auto peer-checked:!p-6 z-50 ">
+        <ZoomPanController className={"flex lg:hidden w-full"} />
+        <div className="collapse-content row-start-3 row-end-4 bg-base-100 dark:bg-base-200 flex items-center justify-between sm:justify-center gap-1 overflow-x-auto peer-checked:!p-6 z-50 ">
           {SIDEBAR_SECTIONS.map((section, index) => (
             <Link
               href={`?section=${section.title}`}

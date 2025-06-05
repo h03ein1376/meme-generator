@@ -1,31 +1,33 @@
-type ZoomPanControllerProps = {
-  scale: number;
-  setScale: (scale: number) => void;
-  setTranslate: React.Dispatch<React.SetStateAction<{ x: number; y: number }>>;
-  isPanning: boolean;
-  setIsPanning: React.Dispatch<React.SetStateAction<boolean>>;
-};
+"use client";
+import { useEditorStore } from "@/store/editor-store";
+import { useZoomPanStore } from "@/store/zoom-pan-store";
+import clsx from "clsx";
 
-export const ZoomPanController = ({
-  scale,
-  setScale,
-  setTranslate,
-  isPanning,
-  setIsPanning,
-}: ZoomPanControllerProps) => {
+export const ZoomPanController = ({ className }: { className: string }) => {
+  const isHasTemplate = useEditorStore((state) => state.isHasTemplate);
+  const scale = useZoomPanStore((state) => state.scale);
+  const isPanning = useZoomPanStore((state) => state.isPanning);
+  const setScale = useZoomPanStore((state) => state.setScale);
+  const setIsPanning = useZoomPanStore((state) => state.setIsPanning);
+  const resetZoomPan = useZoomPanStore((state) => state.resetZoomPan);
+
   return (
-    <div className="flex items-center justify-center flex-wrap gap-2 self-end bg-base-200 dark:bg-base-300 rounded-lg px-2">
+    <div
+      className={clsx(
+        className,
+        "flex items-center justify-center flex-wrap gap-2 self-end bg-base-200 dark:bg-base-300 rounded-lg px-2"
+      )}
+    >
       <button
+        disabled={!isHasTemplate}
         className="btn btn-ghost btn-circle"
-        onClick={() => {
-          setScale(1);
-          setTranslate({ x: 0, y: 0 });
-        }}
+        onClick={() => resetZoomPan()}
       >
         <span className="icon-[iconoir--refresh] w-5 h-5" />
       </button>
       <div className="flex items-center gap-2">
         <input
+          disabled={!isHasTemplate}
           type="range"
           min={0.5}
           max={2}
@@ -38,13 +40,14 @@ export const ZoomPanController = ({
           {Math.round(scale * 100)}%
         </span>
       </div>
-      <button className="btn btn-ghost btn-circle">
+      <button disabled={!isHasTemplate} className="btn btn-ghost btn-circle">
         <label className="swap">
           <input
+            disabled={!isHasTemplate}
             type="checkbox"
             checked={isPanning}
             onChange={() => {
-              setIsPanning((prev) => !prev);
+              setIsPanning(!isPanning);
             }}
           />
           <span className="swap-on icon-[iconoir--drag-hand-gesture] w-5 h-5" />

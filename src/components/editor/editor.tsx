@@ -1,120 +1,28 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { UploadDropZone } from "./upload-drop-zone";
 import { useCanvas } from "@/hooks/use-canvas";
 import { Toolbar } from "./toolbar";
 import { ZoomPanController } from "./zoom-pan-controller";
 import { useEditorStore } from "@/store/editor-store";
+import { useZoomPanStore } from "@/store/zoom-pan-store";
 
 export function Editor() {
-  const canvas = useEditorStore((state) => state.canvas);
   const isHasTemplate = useEditorStore((state) => state.isHasTemplate);
   const isLoading = useEditorStore((state) => state.isLoading);
 
   const { canvasRef, containerRef } = useCanvas();
+  const scale = useZoomPanStore((state) => state.scale);
 
-  const [scale, setScale] = useState(1);
-  const [translate, setTranslate] = useState({ x: 0, y: 0 });
-  const [isPanning, setIsPanning] = useState(false);
-  const dragging = useRef(false);
-  const lastPos = useRef({ x: 0, y: 0 });
+  const translate = useZoomPanStore((state) => state.translate);
 
-  useEffect(() => {
-    if (isPanning) canvas?.lock();
-    else canvas?.unlock();
-  }, [isPanning, canvas]);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const handleMouseDown = (e: MouseEvent) => {
-      if (!isPanning) return;
-      dragging.current = true;
-      lastPos.current = { x: e.clientX, y: e.clientY };
-    };
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!dragging.current || !isPanning) return;
-      const dx = e.clientX - lastPos.current.x;
-      const dy = e.clientY - lastPos.current.y;
-      setTranslate((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
-      lastPos.current = { x: e.clientX, y: e.clientY };
-    };
-
-    const handleMouseUp = () => {
-      dragging.current = false;
-    };
-
-    const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      const delta = e.deltaY > 0 ? -0.05 : 0.05;
-      setScale((prev) => Math.min(Math.max(prev + delta, 0.5), 2));
-    };
-
-    const handleTouchStart = (e: TouchEvent) => {
-      if (!isPanning || e.touches.length !== 1) return;
-      lastPos.current = {
-        x: e.touches[0].clientX,
-        y: e.touches[0].clientY,
-      };
-      dragging.current = true;
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      if (!dragging.current || !isPanning || e.touches.length !== 1) return;
-      const dx = e.touches[0].clientX - lastPos.current.x;
-      const dy = e.touches[0].clientY - lastPos.current.y;
-      setTranslate((prev) => ({ x: prev.x + dx, y: prev.y + dy }));
-      lastPos.current = {
-        x: e.touches[0].clientX,
-        y: e.touches[0].clientY,
-      };
-    };
-
-    const handleTouchEnd = () => {
-      dragging.current = false;
-    };
-
-    container.addEventListener("mousedown", handleMouseDown);
-    container.addEventListener("mousemove", handleMouseMove);
-    container.addEventListener("mouseup", handleMouseUp);
-    container.addEventListener("mouseleave", handleMouseUp);
-    container.addEventListener("wheel", handleWheel, { passive: false });
-
-    container.addEventListener("touchstart", handleTouchStart, {
-      passive: false,
-    });
-    container.addEventListener("touchmove", handleTouchMove, {
-      passive: false,
-    });
-    container.addEventListener("touchend", handleTouchEnd);
-
-    return () => {
-      container.removeEventListener("mousedown", handleMouseDown);
-      container.removeEventListener("mousemove", handleMouseMove);
-      container.removeEventListener("mouseup", handleMouseUp);
-      container.removeEventListener("mouseleave", handleMouseUp);
-      container.removeEventListener("wheel", handleWheel);
-
-      container.removeEventListener("touchstart", handleTouchStart);
-      container.removeEventListener("touchmove", handleTouchMove);
-      container.removeEventListener("touchend", handleTouchEnd);
-    };
-  }, [isPanning]);
+  const isPanning = useZoomPanStore((state) => state.isPanning);
 
   return (
     <div className="w-full relative flex flex-col gap-4 pb-4">
       <Toolbar />
-      <ZoomPanController
-        scale={scale}
-        setScale={setScale}
-        setTranslate={setTranslate}
-        isPanning={isPanning}
-        setIsPanning={setIsPanning}
-      />
+      <ZoomPanController className="hidden lg:flex" />
       <div
         className={clsx(
           isPanning && "cursor-grab",

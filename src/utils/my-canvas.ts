@@ -54,6 +54,8 @@ export class MyCanvas extends Canvas {
   }
 
   isHasTemplate() {
+    console.log(this.getObjects());
+
     return this.getObjects().some((obj) => (obj as any).id === TEMPLATE_ID);
   }
 

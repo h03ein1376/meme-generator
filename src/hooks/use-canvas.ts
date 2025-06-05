@@ -3,16 +3,110 @@
 import { useEffect, useRef, useCallback } from "react";
 import { MyCanvas } from "@/utils/my-canvas";
 import { useEditorStore } from "@/store/editor-store";
+import { useZoomPanStore } from "@/store/zoom-pan-store";
+import { useHistoryStore } from "@/store/history-store";
 
 export const useCanvas = () => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const saveState = useHistoryStore((state) => state.saveState);
+
   const ratio = useEditorStore((state) => state.ratio);
   const canvas = useEditorStore((state) => state.canvas);
   const setCanvas = useEditorStore((state) => state.setCanvas);
   const setIsHasSelection = useEditorStore((state) => state.setIsHasSelection);
   const setIsHasTemplate = useEditorStore((state) => state.setIsHasTemplate);
 
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  const changeScale = useZoomPanStore((state) => state.changeScale);
+  const moveTranslate = useZoomPanStore((state) => state.moveTranslate);
+  const isPanning = useZoomPanStore((state) => state.isPanning);
+
+  const dragging = useRef(false);
+  const lastPos = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    if (isPanning) canvas?.lock();
+    else canvas?.unlock();
+  }, [isPanning, canvas]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleMouseDown = (e: MouseEvent) => {
+      if (!isPanning) return;
+      dragging.current = true;
+      lastPos.current = { x: e.clientX, y: e.clientY };
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!dragging.current || !isPanning) return;
+      const dx = e.clientX - lastPos.current.x;
+      const dy = e.clientY - lastPos.current.y;
+      moveTranslate(dx, dy);
+      lastPos.current = { x: e.clientX, y: e.clientY };
+    };
+
+    const handleMouseUp = () => {
+      dragging.current = false;
+    };
+
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -0.05 : 0.05;
+      changeScale(delta);
+    };
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (!isPanning || e.touches.length !== 1) return;
+      lastPos.current = {
+        x: e.touches[0].clientX,
+        y: e.touches[0].clientY,
+      };
+      dragging.current = true;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!dragging.current || !isPanning || e.touches.length !== 1) return;
+      const dx = e.touches[0].clientX - lastPos.current.x;
+      const dy = e.touches[0].clientY - lastPos.current.y;
+      moveTranslate(dx, dy);
+      lastPos.current = {
+        x: e.touches[0].clientX,
+        y: e.touches[0].clientY,
+      };
+    };
+
+    const handleTouchEnd = () => {
+      dragging.current = false;
+    };
+
+    container.addEventListener("mousedown", handleMouseDown);
+    container.addEventListener("mousemove", handleMouseMove);
+    container.addEventListener("mouseup", handleMouseUp);
+    container.addEventListener("mouseleave", handleMouseUp);
+    container.addEventListener("wheel", handleWheel, { passive: false });
+
+    container.addEventListener("touchstart", handleTouchStart, {
+      passive: false,
+    });
+    container.addEventListener("touchmove", handleTouchMove, {
+      passive: false,
+    });
+    container.addEventListener("touchend", handleTouchEnd);
+
+    return () => {
+      container.removeEventListener("mousedown", handleMouseDown);
+      container.removeEventListener("mousemove", handleMouseMove);
+      container.removeEventListener("mouseup", handleMouseUp);
+      container.removeEventListener("mouseleave", handleMouseUp);
+      container.removeEventListener("wheel", handleWheel);
+
+      container.removeEventListener("touchstart", handleTouchStart);
+      container.removeEventListener("touchmove", handleTouchMove);
+      container.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, [isPanning]);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -22,9 +116,10 @@ export const useCanvas = () => {
       selection: true,
     });
 
-    const checkTemplate = () =>
+    const checkTemplate = () => {
+      saveState(fabricCanvas.toObject(["id"]));
       setIsHasTemplate(fabricCanvas?.isHasTemplate() ?? false);
-
+    };
     const handleSelection = () =>
       setIsHasSelection(fabricCanvas?.isHasSelection() ?? false);
 
@@ -32,6 +127,9 @@ export const useCanvas = () => {
     handleSelection();
 
     fabricCanvas.on("object:added", checkTemplate);
+    fabricCanvas.on("object:modified", () =>
+      saveState(fabricCanvas.toObject(["id"]))
+    );
     fabricCanvas.on("object:removed", checkTemplate);
     fabricCanvas.on("selection:created", handleSelection);
     fabricCanvas.on("selection:updated", handleSelection);
